@@ -1,13 +1,29 @@
 # Docker container for FileBot
-[![Docker Image Size](https://img.shields.io/microbadger/image-size/jlesage/filebot)](http://microbadger.com/#/images/jlesage/filebot) [![Build Status](https://drone.le-sage.com/api/badges/jlesage/docker-filebot/status.svg)](https://drone.le-sage.com/jlesage/docker-filebot) [![GitHub Release](https://img.shields.io/github/release/jlesage/docker-filebot.svg)](https://github.com/jlesage/docker-filebot/releases/latest) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/JocelynLeSage/0usd)
+[![Release](https://img.shields.io/github/release/jlesage/docker-filebot.svg?logo=github&style=for-the-badge)](https://github.com/jlesage/docker-filebot/releases/latest)
+[![Docker Image Size](https://img.shields.io/docker/image-size/jlesage/filebot/latest?logo=docker&style=for-the-badge)](https://hub.docker.com/r/jlesage/filebot/tags)
+[![Docker Pulls](https://img.shields.io/docker/pulls/jlesage/filebot?label=Pulls&logo=docker&style=for-the-badge)](https://hub.docker.com/r/jlesage/filebot)
+[![Docker Stars](https://img.shields.io/docker/stars/jlesage/filebot?label=Stars&logo=docker&style=for-the-badge)](https://hub.docker.com/r/jlesage/filebot)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/jlesage/docker-filebot/build-image.yml?logo=github&branch=master&style=for-the-badge)](https://github.com/jlesage/docker-filebot/actions/workflows/build-image.yml)
+[![Source](https://img.shields.io/badge/Source-GitHub-blue?logo=github&style=for-the-badge)](https://github.com/jlesage/docker-filebot)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?style=for-the-badge)](https://paypal.me/JocelynLeSage)
 
-This is a Docker container for [FileBot](http://www.filebot.net/).
+This project provides a lightweight and secure Docker container for
+[FileBot](https://www.filebot.net).
 
-The GUI of the application is accessed through a modern web browser (no installation or configuration needed on client side) or via any VNC client.
+Access the application's full graphical interface directly from any modern web
+browser - no downloads, installs, or setup required on the client side - or
+connect with any VNC client.
+
+The web interface also offers audio playback, seamless clipboard sharing, an
+integrated file manager and terminal for accessing the container's files and
+shell, desktop notifications, and more.
+
+> This Docker container is entirely unofficial and not made by the creators of
+> FileBot.
 
 ---
 
-[![FileBot logo](https://images.weserv.nl/?url=raw.githubusercontent.com/jlesage/docker-templates/master/jlesage/images/filebot-icon.png&w=200)](http://www.filebot.net/)[![FileBot](https://dummyimage.com/400x110/ffffff/575757&text=FileBot)](http://www.filebot.net/)
+[![FileBot logo](https://images.weserv.nl/?url=raw.githubusercontent.com/jlesage/docker-templates/master/jlesage/images/filebot-icon.png&w=110)](https://www.filebot.net)[![FileBot](https://images.placeholders.dev/?width=224&height=110&fontFamily=monospace&fontWeight=400&fontSize=52&text=FileBot&bgColor=rgba(0,0,0,0.0)&textColor=rgba(121,121,121,1))](https://www.filebot.net)
 
 FileBot is the ultimate tool for organizing and renaming your movies, tv shows
 or anime, and music well as downloading subtitles and artwork. It's smart and
@@ -17,24 +33,26 @@ just works.
 
 ## Quick Start
 
-**NOTE**: The Docker command provided in this quick start is given as an example
-and parameters should be adjusted to your need.
+**NOTE**:
+    The Docker command provided in this quick start is an example, and parameters
+    should be adjusted to suit your needs.
 
 Launch the FileBot docker container with the following command:
-```
+```shell
 docker run -d \
     --name=filebot \
     -p 5800:5800 \
     -v /docker/appdata/filebot:/config:rw \
-    -v $HOME:/storage:rw \
+    -v /home/user:/storage:rw \
     jlesage/filebot
 ```
 
 Where:
-  - `/docker/appdata/filebot`: This is where the application stores its configuration, log and any files needing persistency.
-  - `$HOME`: This location contains files from your host that need to be accessible by the application.
 
-Browse to `http://your-host-ip:5800` to access the FileBot GUI.
+  - `/docker/appdata/filebot`: Stores the application's configuration, state, logs, and any files requiring persistency.
+  - `/home/user`: Contains files from the host that need to be accessible to the application.
+
+Access the FileBot GUI by browsing to `http://your-host-ip:5800`.
 Files from the host appear under the `/storage` folder in the container.
 
 ## Documentation
@@ -43,9 +61,7 @@ Full documentation is available at https://github.com/jlesage/docker-filebot.
 
 ## Support or Contact
 
-Having troubles with the container or have questions?  Please
-[create a new issue].
+Having troubles with the container or have questions? Please
+[create a new issue](https://github.com/jlesage/docker-filebot/issues).
 
-For other great Dockerized applications, see https://jlesage.github.io/docker-apps.
-
-[create a new issue]: https://github.com/jlesage/docker-filebot/issues
+For other Dockerized applications, visit https://jlesage.github.io/docker-apps.

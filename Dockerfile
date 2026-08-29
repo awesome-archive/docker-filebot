@@ -4,103 +4,114 @@
 # https://github.com/jlesage/docker-filebot
 #
 
-# Pull base image.
-FROM jlesage/baseimage-gui:alpine-3.9-v3.5.2
-
 # Docker image version is provided via build arg.
-ARG DOCKER_IMAGE_VERSION=unknown
+ARG DOCKER_IMAGE_VERSION=
 
 # Define software versions.
-ARG FILEBOT_VERSION=4.8.5
-ARG OPENJFX_VERSION=8.151.12-r0
-ARG CHROMAPRINT_VERSION=1.4.3
+ARG FILEBOT_VERSION=5.2.3
+ARG MEDIAINFOLIB_VERSION=26.05
+ARG ZENLIB_VERSION=0.4.41
+ARG UNRAR_VERSION=6.1.7
 
 # Define software download URLs.
 ARG FILEBOT_URL=https://get.filebot.net/filebot/FileBot_${FILEBOT_VERSION}/FileBot_${FILEBOT_VERSION}-portable.tar.xz
-ARG OPENJFX_URL=https://github.com/sgerrand/alpine-pkg-java-openjfx/releases/download/${OPENJFX_VERSION}/java-openjfx-${OPENJFX_VERSION}.apk
-ARG CHROMAPRINT_URL=https://github.com/acoustid/chromaprint/archive/v${CHROMAPRINT_VERSION}.tar.gz
+ARG MEDIAINFOLIB_URL=https://github.com/MediaArea/MediaInfoLib/archive/refs/tags/v${MEDIAINFOLIB_VERSION}.tar.gz
+ARG ZENLIB_URL=https://github.com/MediaArea/ZenLib/archive/refs/tags/v${ZENLIB_VERSION}.tar.gz
+ARG UNRAR_URL=https://www.rarlab.com/rar/unrarsrc-${UNRAR_VERSION}.tar.gz
+
+# Get Dockerfile cross-compilation helpers.
+FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
+
+# Get FileBot
+FROM --platform=$BUILDPLATFORM alpine:3.20 AS filebot
+ARG FILEBOT_URL
+RUN \
+    apk --no-cache add curl && \
+    # Download sources.
+    mkdir /tmp/filebot && \
+    curl -# -L -f ${FILEBOT_URL} | tar xJ -C /tmp/filebot && \
+    # Install.
+    mkdir /opt/filebot && \
+    cp -Rv /tmp/filebot/jar /opt/filebot/
+
+# Build unrar. It has been moved to non-free since Alpine 3.15.
+# https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.15.0#unrar_moved_to_non-free
+FROM --platform=$BUILDPLATFORM alpine:3.20 AS unrar
+ARG TARGETPLATFORM
+ARG UNRAR_URL
+COPY --from=xx / /
+COPY src/unrar /build
+RUN /build/build.sh "$UNRAR_URL"
+RUN xx-verify \
+    /tmp/unrar-install/usr/bin/unrar
+
+# Build MediaInfoLib.
+FROM --platform=$BUILDPLATFORM alpine:3.20 AS libmediainfo
+ARG TARGETPLATFORM
+ARG MEDIAINFOLIB_URL
+ARG ZENLIB_URL
+COPY --from=xx / /
+COPY src/libmediainfo /build
+RUN /build/build.sh "$MEDIAINFOLIB_URL" "$ZENLIB_URL"
+RUN xx-verify \
+    /tmp/libmediainfo-install/usr/lib/libmediainfo.so \
+    /tmp/libmediainfo-install/usr/lib/libzen.so
+
+# Pull base image.
+FROM jlesage/baseimage-gui:alpine-3.20-v4.13.2
+
+ARG FILEBOT_VERSION
+ARG DOCKER_IMAGE_VERSION
 
 # Define working directory.
 WORKDIR /tmp
 
-# Install FileBot.
-RUN \
-    add-pkg --virtual build-dependencies curl && \
-    mkdir filebot && \
-    # Download sources.
-    curl -# -L ${FILEBOT_URL} | tar xJ -C filebot && \
-    # Install.
-    mkdir /opt/filebot && \
-    cp -Rv filebot/jar /opt/filebot/ && \
-    # Cleanup.
-    del-pkg build-dependencies && \
-    rm -rf /tmp/* /tmp/.[!.]*
-
 # Install dependencies.
 RUN \
-    add-pkg --virtual build-dependencies curl && \
-    # OpenJFX
-    curl -# -L -o java-openjfx.apk ${OPENJFX_URL} && \
-    apk --no-cache add --allow-untrusted ./java-openjfx.apk && \
     add-pkg \
+        bash \
         p7zip \
-        unrar \
         findutils \
         coreutils \
-        nss \
-        gtk+2.0 \
-        openjdk8-jre \
-        java-jna \
-        libmediainfo \
-        && \
-    # YAD
-    add-pkg yad && \
-    # Cleanup.
-    del-pkg build-dependencies && \
-    rm -rf /tmp/* /tmp/.[!.]*
-
-# Build and install chromaprint (fpcalc) for AcousItD.
-RUN \
-    add-pkg --virtual build-dependencies \
-        build-base \
-        cmake \
         curl \
-        ffmpeg-dev \
-        fftw-dev \
+        ttf-dejavu \
+        adwaita-icon-theme \
+        openjdk17-jre \
+        # For chromaprint (fpcalc)
+        chromaprint \
+        # For libmediainfo.
+        tinyxml2 \
+        # Used by Filebot as the open file window.
+        zenity \
         && \
-    # Download.
-    mkdir chromaprint && \
-    curl -# -L ${CHROMAPRINT_URL} | tar xz --strip 1 -C chromaprint && \
-    # Compile.
-    cd chromaprint && \
-    mkdir build && cd build && \
-    cmake \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_TOOLS=ON \
-        .. && \
-    make -j$(nproc) && \
-    make install && \
-    cd .. && \
-    cd .. && \
-    # Cleanup.
-    del-pkg build-dependencies && \
-    rm /usr/lib/pkgconfig/libchromaprint.pc \
-       /usr/include/chromaprint.h \
-       && \
-    rmdir /usr/include \
-          /usr/lib/pkgconfig \
-          && \
-    rm -rf /tmp/* /tmp/.[!.]*
-
-# Adjust the openbox config.
-RUN \
-    # Maximize only the main window.
-    sed-patch 's/<application type="normal">/<application type="normal" title="FileBot \*">/' \
-        /etc/xdg/openbox/rc.xml && \
-    # Make sure the main window is always in the background.
-    sed-patch '/<application type="normal" title="FileBot \*">/a \    <layer>below</layer>' \
-        /etc/xdg/openbox/rc.xml
+    # A recent version of JNA, only available in edge, is needed.
+    add-pkg --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+            --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
+            --upgrade java-jna-native && \
+    # Remove unneeded icons.
+    rm -r /usr/share/icons/Adwaita/cursors && \
+    find /usr/share/icons/Adwaita -type f -name "*.svg" -delete && \
+    find /usr/share/icons/Adwaita -type f -name "*.png" \
+        ! -path "*/mimetypes/*" \
+        ! -name bookmark-new-symbolic.symbolic.png \
+        ! -name dialog-information.png \
+        ! -name dialog-warning.png \
+        ! -name document-open-recent-symbolic.symbolic.png \
+        ! -name drive-harddisk.png \
+        ! -name drive-harddisk-symbolic.symbolic.png \
+        ! -name folder-new-symbolic.symbolic.png \
+        ! -name image-missing.png \
+        ! -name list-add-symbolic.symbolic.png \
+        ! -name media-eject-symbolic.symbolic.png \
+        ! -name pan-up-symbolic.symbolic.png \
+        ! -name pan-down-symbolic.symbolic.png \
+        ! -name pan-end-symbolic.symbolic.png \
+        ! -name pan-start-symbolic.symbolic.png \
+        ! -name user-desktop-symbolic.symbolic.png \
+        ! -name user-home.png \
+        ! -name user-home-symbolic.symbolic.png \
+        ! -name user-trash-symbolic.symbolic.png \
+        -delete
 
 # Generate and install favicons.
 RUN \
@@ -109,37 +120,52 @@ RUN \
 
 # Add files.
 COPY rootfs/ /
+COPY --from=filebot /opt/filebot /opt/filebot
+COPY --from=libmediainfo /tmp/libmediainfo-install/usr/lib /usr/lib
+COPY --from=unrar /tmp/unrar-install/usr/bin/unrar /usr/bin/unrar
 
-# Set environment variables.
-ENV APP_NAME="FileBot" \
+# Set internal environment variables.
+RUN \
+    set-cont-env APP_NAME "FileBot" && \
+    set-cont-env APP_VERSION "$FILEBOT_VERSION" && \
+    set-cont-env DOCKER_IMAGE_VERSION "$DOCKER_IMAGE_VERSION" && \
+    set-cont-env DISABLE_GLX 1 && \
+    true
+
+# Set public environment variables.
+ENV \
+    FILEBOT_GUI=1 \
+    AMC_ENABLED=1 \
+    USE_FILEBOT_BETA=0 \
+    FILEBOT_CUSTOM_OPTIONS= \
     OPENSUBTITLES_USERNAME= \
     OPENSUBTITLES_PASSWORD= \
-    AMC_INTERVAL="1800" \
-    AMC_INPUT_STABLE_TIME="10" \
-    AMC_ACTION="test" \
-    AMC_CONFLICT="auto" \
-    AMC_MATCH_MODE="opportunistic" \
-    AMC_ARTWORK="n" \
+    AMC_INTERVAL=1800 \
+    AMC_INPUT_STABLE_TIME=10 \
+    AMC_ACTION=test \
+    AMC_CONFLICT=auto \
+    AMC_MATCH_MODE=opportunistic \
+    AMC_ARTWORK=n \
+    AMC_LANG=English \
     AMC_MUSIC_FORMAT="{plex}" \
     AMC_MOVIE_FORMAT="{plex}" \
     AMC_SERIES_FORMAT="{plex}" \
     AMC_ANIME_FORMAT="{plex}" \
-    AMC_PROCESS_MUSIC="y" \
+    AMC_PROCESS_MUSIC=y \
     AMC_SUBTITLE_LANG= \
     AMC_CUSTOM_OPTIONS= \
-    AMC_INPUT_FOLDER=/watch \
-    AMC_OUTPUT_FOLDER=/output
+    AMC_INPUT_DIR=/watch \
+    AMC_OUTPUT_DIR=/output
 
 # Define mountable directories.
-VOLUME ["/config"]
 VOLUME ["/storage"]
-VOLUME ["/watch"]
 VOLUME ["/output"]
+VOLUME ["/watch"]
 
 # Metadata.
 LABEL \
       org.label-schema.name="filebot" \
       org.label-schema.description="Docker container for FileBot" \
-      org.label-schema.version="$DOCKER_IMAGE_VERSION" \
+      org.label-schema.version="${DOCKER_IMAGE_VERSION:-unknown}" \
       org.label-schema.vcs-url="https://github.com/jlesage/docker-filebot" \
       org.label-schema.schema-version="1.0"

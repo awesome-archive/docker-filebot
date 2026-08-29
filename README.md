@@ -1,13 +1,29 @@
 # Docker container for FileBot
-[![Docker Image Size](https://img.shields.io/microbadger/image-size/jlesage/filebot)](http://microbadger.com/#/images/jlesage/filebot) [![Build Status](https://drone.le-sage.com/api/badges/jlesage/docker-filebot/status.svg)](https://drone.le-sage.com/jlesage/docker-filebot) [![GitHub Release](https://img.shields.io/github/release/jlesage/docker-filebot.svg)](https://github.com/jlesage/docker-filebot/releases/latest) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/JocelynLeSage/0usd)
+[![Release](https://img.shields.io/github/release/jlesage/docker-filebot.svg?logo=github&style=for-the-badge)](https://github.com/jlesage/docker-filebot/releases/latest)
+[![Docker Image Size](https://img.shields.io/docker/image-size/jlesage/filebot/latest?logo=docker&style=for-the-badge)](https://hub.docker.com/r/jlesage/filebot/tags)
+[![Docker Pulls](https://img.shields.io/docker/pulls/jlesage/filebot?label=Pulls&logo=docker&style=for-the-badge)](https://hub.docker.com/r/jlesage/filebot)
+[![Docker Stars](https://img.shields.io/docker/stars/jlesage/filebot?label=Stars&logo=docker&style=for-the-badge)](https://hub.docker.com/r/jlesage/filebot)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/jlesage/docker-filebot/build-image.yml?logo=github&branch=master&style=for-the-badge)](https://github.com/jlesage/docker-filebot/actions/workflows/build-image.yml)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?style=for-the-badge)](https://paypal.me/JocelynLeSage)
 
-This is a Docker container for [FileBot](http://www.filebot.net/).
+This project provides a lightweight and secure Docker container for
+[FileBot](https://www.filebot.net).
 
-The GUI of the application is accessed through a modern web browser (no installation or configuration needed on client side) or via any VNC client.
+Access the application's full graphical interface directly from any modern web
+browser - no downloads, installs, or setup required on the client side - or
+connect with any VNC client.
+
+The web interface also offers audio playback, seamless clipboard sharing, an
+integrated file manager and terminal for accessing the container's files and
+shell, desktop notifications, and more.
+
+> [!NOTE]
+> This Docker container is entirely unofficial and not made by the creators of
+> FileBot.
 
 ---
 
-[![FileBot logo](https://images.weserv.nl/?url=raw.githubusercontent.com/jlesage/docker-templates/master/jlesage/images/filebot-icon.png&w=200)](http://www.filebot.net/)[![FileBot](https://dummyimage.com/400x110/ffffff/575757&text=FileBot)](http://www.filebot.net/)
+[![FileBot logo](https://images.weserv.nl/?url=raw.githubusercontent.com/jlesage/docker-templates/master/jlesage/images/filebot-icon.png&w=110)](https://www.filebot.net)[![FileBot](https://images.placeholders.dev/?width=224&height=110&fontFamily=monospace&fontWeight=400&fontSize=52&text=FileBot&bgColor=rgba(0,0,0,0.0)&textColor=rgba(121,121,121,1))](https://www.filebot.net)
 
 FileBot is the ultimate tool for organizing and renaming your movies, tv shows
 or anime, and music well as downloading subtitles and artwork. It's smart and
@@ -15,61 +31,74 @@ just works.
 
 ---
 
-## Table of Content
+## Table of Contents
 
-   * [Docker container for FileBot](#docker-container-for-filebot)
-      * [Table of Content](#table-of-content)
-      * [Quick Start](#quick-start)
-      * [Usage](#usage)
-         * [Environment Variables](#environment-variables)
-         * [Data Volumes](#data-volumes)
-         * [Ports](#ports)
-         * [Changing Parameters of a Running Container](#changing-parameters-of-a-running-container)
+   * [Quick Start](#quick-start)
+   * [Usage](#usage)
+      * [Environment Variables](#environment-variables)
+         * [Deployment Considerations](#deployment-considerations)
+      * [Data Volumes](#data-volumes)
+      * [Ports](#ports)
+      * [Changing Parameters of a Running Container](#changing-parameters-of-a-running-container)
       * [Docker Compose File](#docker-compose-file)
-      * [Docker Image Update](#docker-image-update)
-         * [Synology](#synology)
-         * [unRAID](#unraid)
-      * [User/Group IDs](#usergroup-ids)
-      * [Accessing the GUI](#accessing-the-gui)
-      * [Security](#security)
-         * [SSVNC](#ssvnc)
-         * [Certificates](#certificates)
-         * [VNC Password](#vnc-password)
-      * [Reverse Proxy](#reverse-proxy)
-         * [Routing Based on Hostname](#routing-based-on-hostname)
-         * [Routing Based on URL Path](#routing-based-on-url-path)
-      * [Shell Access](#shell-access)
-      * [License](#license)
-         * [Installing a License](#installing-a-license)
-         * [Donation Supported Version](#donation-supported-version)
-      * [Automated Media Center (AMC)](#automated-media-center-amc)
-      * [Support or Contact](#support-or-contact)
+   * [Docker Image Versioning and Tags](#docker-image-versioning-and-tags)
+   * [Docker Image Update](#docker-image-update)
+      * [Synology](#synology)
+      * [unRAID](#unraid)
+   * [User/Group IDs](#usergroup-ids)
+   * [Shell Access](#shell-access)
+   * [Accessing the GUI](#accessing-the-gui)
+   * [Security](#security)
+      * [SSVNC](#ssvnc)
+      * [Certificates](#certificates)
+      * [VNC Password](#vnc-password)
+      * [Web Authentication](#web-authentication)
+         * [Configuring Users Credentials](#configuring-users-credentials)
+   * [Reverse Proxy](#reverse-proxy)
+      * [Routing Based on Hostname](#routing-based-on-hostname)
+      * [Routing Based on URL Path](#routing-based-on-url-path)
+   * [Web Control Panel](#web-control-panel)
+   * [Host Clipboard Sync](#host-clipboard-sync)
+   * [Web Audio](#web-audio)
+   * [Web File Manager](#web-file-manager)
+   * [Web Notifications](#web-notifications)
+   * [Web Terminal](#web-terminal)
+   * [GPU Acceleration Support](#gpu-acceleration-support)
+   * [License](#license)
+      * [Installing a License](#installing-a-license)
+      * [Donation Supported Version](#donation-supported-version)
+   * [Automated Media Center (AMC)](#automated-media-center-amc)
+   * [Using a Beta Version](#using-a-beta-version)
+   * [Support or Contact](#support-or-contact)
 
 ## Quick Start
 
-**NOTE**: The Docker command provided in this quick start is given as an example
-and parameters should be adjusted to your need.
+> [!IMPORTANT]
+> The Docker command provided in this quick start is an example, and parameters
+> should be adjusted to suit your needs.
 
 Launch the FileBot docker container with the following command:
-```
+
+```shell
 docker run -d \
     --name=filebot \
     -p 5800:5800 \
     -v /docker/appdata/filebot:/config:rw \
-    -v $HOME:/storage:rw \
+    -v /home/user:/storage:rw \
     jlesage/filebot
 ```
 
 Where:
-  - `/docker/appdata/filebot`: This is where the application stores its configuration, log and any files needing persistency.
-  - `$HOME`: This location contains files from your host that need to be accessible by the application.
 
-Browse to `http://your-host-ip:5800` to access the FileBot GUI.
+  - `/docker/appdata/filebot`: Stores the application's configuration, state, logs, and any files requiring persistency.
+  - `/home/user`: Contains files from the host that need to be accessible to the application.
+
+Access the FileBot GUI by browsing to `http://your-host-ip:5800`.
 Files from the host appear under the `/storage` folder in the container.
 
 ## Usage
 
-```
+```shell
 docker run [-d] \
     --name=filebot \
     [-e <VARIABLE_NAME>=<VALUE>]... \
@@ -77,306 +106,504 @@ docker run [-d] \
     [-p <HOST_PORT>:<CONTAINER_PORT>]... \
     jlesage/filebot
 ```
+
 | Parameter | Description |
 |-----------|-------------|
-| -d        | Run the container in background.  If not set, the container runs in foreground. |
-| -e        | Pass an environment variable to the container.  See the [Environment Variables](#environment-variables) section for more details. |
-| -v        | Set a volume mapping (allows to share a folder/file between the host and the container).  See the [Data Volumes](#data-volumes) section for more details. |
-| -p        | Set a network port mapping (exposes an internal container port to the host).  See the [Ports](#ports) section for more details. |
+| -d        | Runs the container in the background. If not set, the container runs in the foreground. |
+| -e        | Passes an environment variable to the container. See [Environment Variables](#environment-variables) for details. |
+| -v        | Sets a volume mapping to share a folder or file between the host and the container. See [Data Volumes](#data-volumes) for details. |
+| -p        | Sets a network port mapping to expose an internal container port to the host). See [Ports](#ports) for details. |
 
 ### Environment Variables
 
-To customize some properties of the container, the following environment
-variables can be passed via the `-e` parameter (one for each variable).  Value
-of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
+To customize the container's behavior, you can pass environment variables using
+the `-e` parameter in the format `<VARIABLE_NAME>=<VALUE>`.
 
 | Variable       | Description                                  | Default |
 |----------------|----------------------------------------------|---------|
-|`USER_ID`| ID of the user the application runs as.  See [User/Group IDs](#usergroup-ids) to better understand when this should be set. | `1000` |
-|`GROUP_ID`| ID of the group the application runs as.  See [User/Group IDs](#usergroup-ids) to better understand when this should be set. | `1000` |
-|`SUP_GROUP_IDS`| Comma-separated list of supplementary group IDs of the application. | (unset) |
-|`UMASK`| Mask that controls how file permissions are set for newly created files. The value of the mask is in octal notation.  By default, this variable is not set and the default umask of `022` is used, meaning that newly created files are readable by everyone, but only writable by the owner. See the following online umask calculator: http://wintelguy.com/umask-calc.pl | (unset) |
-|`TZ`| [TimeZone] of the container.  Timezone can also be set by mapping `/etc/localtime` between the host and the container. | `Etc/UTC` |
-|`KEEP_APP_RUNNING`| When set to `1`, the application will be automatically restarted if it crashes or if user quits it. | `0` |
-|`APP_NICENESS`| Priority at which the application should run.  A niceness value of -20 is the highest priority and 19 is the lowest priority.  By default, niceness is not set, meaning that the default niceness of 0 is used.  **NOTE**: A negative niceness (priority increase) requires additional permissions.  In this case, the container should be run with the docker option `--cap-add=SYS_NICE`. | (unset) |
-|`CLEAN_TMP_DIR`| When set to `1`, all files in the `/tmp` directory are delete during the container startup. | `1` |
-|`DISPLAY_WIDTH`| Width (in pixels) of the application's window. | `1280` |
-|`DISPLAY_HEIGHT`| Height (in pixels) of the application's window. | `768` |
-|`SECURE_CONNECTION`| When set to `1`, an encrypted connection is used to access the application's GUI (either via web browser or VNC client).  See the [Security](#security) section for more details. | `0` |
-|`VNC_PASSWORD`| Password needed to connect to the application's GUI.  See the [VNC Password](#vnc-password) section for more details. | (unset) |
-|`X11VNC_EXTRA_OPTS`| Extra options to pass to the x11vnc server running in the Docker container.  **WARNING**: For advanced users. Do not use unless you know what you are doing. | (unset) |
-|`ENABLE_CJK_FONT`| When set to `1`, open source computer font `WenQuanYi Zen Hei` is installed.  This font contains a large range of Chinese/Japanese/Korean characters. | `0` |
-|`OPENSUBTITLES_USERNAME`| Username of your [OpenSubtitles](https://www.opensubtitles.org) account.  Required to download subtitles. | (unset) |
-|`OPENSUBTITLES_PASSWORD`| Password of your [OpenSubtitles](https://www.opensubtitles.org) account.  Required to download subtitles. | (unset) |
+|`USER_ID`| ID of the user the application runs as. See [User/Group IDs](#usergroup-ids) for details. | `1000` |
+|`GROUP_ID`| ID of the group the application runs as. See [User/Group IDs](#usergroup-ids) for details. | `1000` |
+|`SUP_GROUP_IDS`| Comma-separated list of supplementary group IDs for the application. | (no value) |
+|`UMASK`| Mask controlling permissions for newly created files and folders, specified in octal notation. By default, `0022` ensures files and folders are readable by all but writable only by the owner. See the umask calculator at http://wintelguy.com/umask-calc.pl. | `0022` |
+|`LANG`| Sets the [locale](https://en.wikipedia.org/wiki/Locale_(computer_software)), defining the application's language, if supported. Format is `language[_territory][.codeset]`, where language is an [ISO 639 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes), territory is an [ISO 3166 country code](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes), and codeset is a character set, like `UTF-8`. For example, Australian English using UTF-8 is `en_AU.UTF-8`. | `en_US.UTF-8` |
+|`TZ`| [TimeZone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) used by the container. The timezone can also be set by mapping `/etc/localtime` between the host and the container. | `Etc/UTC` |
+|`KEEP_APP_RUNNING`| When set to `1`, the application is automatically restarted if it crashes or terminates. | `0` |
+|`APP_NICENESS`| Priority at which the application runs. A niceness value of `-20` is the highest, `19` is the lowest and `0` the default. **NOTE**: A negative niceness (priority increase) requires additional permissions. The container must be run with the Docker option `--cap-add=SYS_NICE`. | `0` |
+|`INSTALL_PACKAGES`| Space-separated list of packages to install during container startup. List of available packages can be found at https://pkgs.alpinelinux.org. | (no value) |
+|`PACKAGES_MIRROR`| Mirror of the repository to use when installing packages. List of mirrors is available at https://mirrors.alpinelinux.org. | (no value) |
+|`CONTAINER_DEBUG`| When set to `1`, enables debug logging. | `0` |
+|`DISPLAY_WIDTH`| Width (in pixels) of the application's window. | `1920` |
+|`DISPLAY_HEIGHT`| Height (in pixels) of the application's window. | `1080` |
+|`DARK_MODE`| When set to `1`, enables dark mode for the application. See Dark Mode](#dark-mode) for details. | `0` |
+|`WEB_AUDIO`| When set to `1`, enables audio support, allowing audio produced by the application to play through the browser. See [Web Audio](#web-audio) for details. | `0` |
+|`WEB_HOST_CLIPBOARD_SYNC`| When set to `1`, enables support for synchronizing the host system clipboard with the application inside the container. Actual availability still depends on the browser. See [Host Clipboard Sync](#host-clipboard-sync) for details. | `1` |
+|`WEB_FILE_MANAGER`| When set to `1`, enables the web file manager, allowing interaction with files inside the container through the web browser, supporting operations like renaming, deleting, uploading, and downloading. See [Web File Manager](#web-file-manager) for details. | `0` |
+|`WEB_FILE_MANAGER_ALLOWED_PATHS`| Comma-separated list of paths within the container that the file manager can access. By default, the container's entire filesystem is not accessible, and this variable specifies allowed paths. If set to `AUTO`, commonly used folders and those mapped to the container are automatically allowed. The value `ALL` allows access to all paths (no restrictions). See [Web File Manager](#web-file-manager) for details. | `AUTO` |
+|`WEB_FILE_MANAGER_DENIED_PATHS`| Comma-separated list of paths within the container that the file manager cannot access. A denied path takes precedence over an allowed path. See [Web File Manager](#web-file-manager) for details. | (no value) |
+|`WEB_NOTIFICATION`| When set to `1`, enables the web notification service, allowing the browser to display desktop notifications from the application. Requires the container to be configured with secure web access (HTTPS). See [Web Notifications](#web-notifications) for details. | `0` |
+|`WEB_TERMINAL`| When set to `1`, enables access to a terminal from the web interface. It is strongly recommended to configure the container with secure web access (HTTPS). See [Web Terminal](#web-terminal) for details. | `0` |
+|`WEB_TERMINAL_SHELL_PATH`| The shell used by the web terminal. | `/bin/sh` |
+|`WEB_AUTHENTICATION`| When set to `1`, protects the application's GUI with a login page when accessed via a web browser. Access is granted only with valid credentials. Requires the container to be configured with secure web access (HTTPS). See [Web Authentication](#web-authentication) for details. | `0` |
+|`WEB_AUTHENTICATION_ALLOW_INSECURE`| When set to `1`, allows web authentication without `SECURE_CONNECTION`. **Not recommended.** Credentials and session tokens may travel in cleartext. Use only if you fully understand the risks. See [Web Authentication](#web-authentication) for details. | `0` |
+|`WEB_AUTHENTICATION_TOKEN_VALIDITY_TIME`| Lifetime of a token, in hours. A token is assigned to the user after successful login. As long as the token is valid, the user can access the application's GUI without logging in again. Once the token expires, the login page is displayed again. | `24` |
+|`WEB_AUTHENTICATION_USERNAME`| Optional username for web authentication. Provides a quick and easy way to configure credentials for a single user. For more secure configuration or multiple users, see the [Web Authentication](#web-authentication) section. | (no value) |
+|`WEB_AUTHENTICATION_PASSWORD`| Optional password for web authentication. Provides a quick and easy way to configure credentials for a single user. For more secure configuration or multiple users, see the [Web Authentication](#web-authentication) section. | (no value) |
+|`SECURE_CONNECTION`| When set to `1`, uses an encrypted connection to access the application's GUI (via web browser or VNC client). See [Security](#security) for details. | `0` |
+|`SECURE_CONNECTION_VNC_METHOD`| Method used for encrypted VNC connections. Possible values are `SSL` or `TLS`. See [Security](#security) for details. | `SSL` |
+|`SECURE_CONNECTION_CERTS_CHECK_INTERVAL`| Interval, in seconds, at which the system checks if web or VNC certificates have changed. When a change is detected, affected services are automatically restarted. A value of `0` disables the check. | `60` |
+|`WEB_LOCALHOST_ONLY`| When set to `1`, allows web connections only from localhost (127.0.0.1 and ::1). | `0` |
+|`VNC_LOCALHOST_ONLY`| When set to `1`, allows VNC connections only from localhost (127.0.0.1 and ::1). | `0` |
+|`WEB_LISTENING_PORT`| Port used by the web server to serve the application's GUI. This port is internal to the container and typically does not need to be changed. By default, a container uses the default bridge network, requiring each internal port to be mapped to an external port (using the `-p` or `--publish` argument). If another network type is used, changing this port may prevent conflicts with other services/containers. **NOTE**: A value of `-1` disables HTTP/HTTPS access to the application's GUI. | `5800` |
+|`VNC_LISTENING_PORT`| Port used by the VNC server to serve the application's GUI. This port is internal to the container and typically does not need to be changed. By default, a container uses the default bridge network, requiring each internal port to be mapped to an external port (using the `-p` or `--publish` argument). If another network type is used, changing this port may prevent conflicts with other services/containers. **NOTE**: A value of `-1` disables VNC access to the application's GUI. | `5900` |
+|`VNC_PASSWORD`| Password required to connect to the application's GUI. See the [VNC Password](#vnc-password) section for details. | (no value) |
+|`ENABLE_CJK_FONT`| When set to `1`, installs the open-source font `WenQuanYi Zen Hei`, supporting a wide range of Chinese/Japanese/Korean characters. | `0` |
+|`FILEBOT_GUI`| Setting this to `1` enables the FileBot GUI, `0` disables it. | `1` |
+|`AMC_ENABLED`| Setting this to `1` enables the Automated Media Center (AMC) script, `0` disables it. | `1` |
+|`OPENSUBTITLES_USERNAME`| Username of your [OpenSubtitles](https://www.opensubtitles.com) account. Required to download subtitles. | (no value) |
+|`OPENSUBTITLES_PASSWORD`| Password of your [OpenSubtitles](https://www.opensubtitles.com) account. Required to download subtitles. | (no value) |
+|`FILEBOT_CUSTOM_OPTIONS`| Custom arguments to pass to FileBot. This applies to the UI only. | (no value) |
+|`USE_FILEBOT_BETA`| When set to `1`, FileBot installed under `/config/beta` (container path) is used. If no FileBot installation is found under this folder, the latest beta version is automatically downloaded during container startup. See [Using a Beta Version](#using-a-beta-version) section for more details. **NOTE**: Use at your own risk. Beta version may have bugs and stability issues. | `0` |
 |`AMC_INTERVAL`| Time (in seconds) between each invocation of the Automated Media Center (AMC) script. | `1800` |
-|`AMC_INPUT_STABLE_TIME`| Time (in seconds) during which properties (e.g. size, time, etc) of files in the watch folder need to remain the same before invoking the Automated Media Center (AMC) script.  This is to avoid processing the watch folder while files are being copied. | `10` |
-|`AMC_ACTION`| Action performed by the Automated Media Center (AMC) script on files.  Valid values are `test`, `copy`, `move`, `symlink`, `hardlink`, `keeplink`, `duplicate` or `clone`.  Use the `test` operation to perform a dry-run and verify that everything gets matched up correctly. | `test` |
-|`AMC_CONFLICT`| Conflict resolution strategy used by the Automated Media Center (AMC) script: `skip` never overrides existing files, while `auto` overrides existing file only if new media is better. | `auto` |
-|`AMC_MATCH_MODE`| Match mode used by the Automated Media Center (AMC) script: `opportunistic` mode works for all files regardless how badly they are named, while `strict` mode works for reasonably well-named files and ignore files that cannot be matched accurately.  See [Match Mode](https://www.filebot.net/forums/viewtopic.php?t=4695) for complete documentation. | `opportunistic` |
+|`AMC_INPUT_STABLE_TIME`| Time (in seconds) during which properties (e.g. size, time, etc) of files in the watch folder need to remain the same before invoking the Automated Media Center (AMC) script. This is to avoid processing the watch folder while files are being copied. | `10` |
+|`AMC_ACTION`| Action performed by the Automated Media Center (AMC) script on files.  Valid values are `test`, `copy`, `move`, `symlink`, `hardlink`, `keeplink`, `duplicate` or `clone`. Use the `test` operation to perform a dry-run and verify that everything gets matched up correctly. | `test` |
+|`AMC_CONFLICT`| Conflict resolution strategy used by the Automated Media Center (AMC) script. When set to `skip`, existing files are never overriden, while `auto` overrides existing file only if new media is better. | `auto` |
+|`AMC_MATCH_MODE`| Match mode used by the Automated Media Center (AMC) script. The `opportunistic` mode works for all files regardless how badly they are named, while `strict` mode works for reasonably well-named files and ignore files that cannot be matched accurately. See [Match Mode](https://www.filebot.net/forums/viewtopic.php?t=4695) for complete documentation. | `opportunistic` |
 |`AMC_ARTWORK`| When set to `y`, artwork is fetched and NFO file is generated by the Automated Media Center (AMC) script. | `n` |
-|`AMC_MUSIC_FORMAT`| Define how music files are renamed by the Automated Media Center (AMC) script.  Filebot supports a very powerful naming scheme.  See [Format Expressions](https://www.filebot.net/naming.html) for complete documentation. | `{plex}` |
-|`AMC_MOVIE_FORMAT`| Define how movie files are renamed by the Automated Media Center (AMC) script.  Filebot supports a very powerful naming scheme.  See [Format Expressions](https://www.filebot.net/naming.html) for complete documentation. | `{plex}` |
-|`AMC_SERIES_FORMAT`| Define how TV series files are renamed by the Automated Media Center (AMC) script.  Filebot supports a very powerful naming scheme.  See [Format Expressions](https://www.filebot.net/naming.html) for complete documentation. | `{plex}` |
-|`AMC_ANIME_FORMAT`| Define how anime files are renamed by the Automated Media Center (AMC) script.  Filebot supports a very powerful naming scheme.  See [Format Expressions](https://www.filebot.net/naming.html) for complete documentation. | `{plex}` |
-|`AMC_PROCESS_MUSIC`| When set to `y`, music files are processed by the Automated Media Center (AMC) script.  A value of `n` does not process them. | `y` |
-|`AMC_SUBTITLE_LANG`| Comma-separated list of subtitle languages to download.  Example: `en,de,fr`. | (unset) |
-|`AMC_CUSTOM_OPTIONS`| Custom arguments to pass to the Automated Media Center (AMC) script. | (unset) |
+|`AMC_LANG`| Language used by the Automated Media Center (AMC) script to rename files. Two-characters language code or value like English, French, German, Chinese, etc can be used. | `English` |
+|`AMC_MUSIC_FORMAT`| Define how music files are renamed by the Automated Media Center (AMC) script. Filebot supports a very powerful naming scheme. See [Format Expressions](https://www.filebot.net/naming.html) for complete documentation. | `{plex}` |
+|`AMC_MOVIE_FORMAT`| Define how movie files are renamed by the Automated Media Center (AMC) script. Filebot supports a very powerful naming scheme. See [Format Expressions](https://www.filebot.net/naming.html) for complete documentation. | `{plex}` |
+|`AMC_SERIES_FORMAT`| Define how TV series files are renamed by the Automated Media Center (AMC) script. Filebot supports a very powerful naming scheme. See [Format Expressions](https://www.filebot.net/naming.html) for complete documentation. | `{plex}` |
+|`AMC_ANIME_FORMAT`| Define how anime files are renamed by the Automated Media Center (AMC) script. Filebot supports a very powerful naming scheme. See [Format Expressions](https://www.filebot.net/naming.html) for complete documentation. | `{plex}` |
+|`AMC_PROCESS_MUSIC`| When set to `y`, music files are processed by the Automated Media Center (AMC) script. A value of `n` does not process them. | `y` |
+|`AMC_SUBTITLE_LANG`| Comma-separated list of subtitle languages to download. Example: `en,de,fr`. | (no value) |
+|`AMC_CUSTOM_OPTIONS`| Custom arguments to pass to the Automated Media Center (AMC) script. | (no value) |
 |`AMC_INPUT_DIR`| Directory inside the container used as the input folder of the Automated Media Center (AMC) script. | `/watch` |
 |`AMC_OUTPUT_DIR`| Directory inside the container used as the output folder of the Automated Media Center (AMC) script. | `/output` |
-|`AMC_INSTALL_PKGS`| Space-separated list of Alpine Linux packages to install.  This is useful when the Automated Media Center (AMC) script is configured to invoke a user-defined script that requires tools not available in the container image.  See https://pkgs.alpinelinux.org/packages?name=&branch=v3.9&arch=x86_64 for the list of available Alpine Linux packages. | (unset) |
+
+#### Deployment Considerations
+
+Many tools used to manage Docker containers extract environment variables
+defined by the Docker image to create or deploy the container.
+
+For example, this behavior is seen in:
+  - The Docker application on Synology NAS
+  - The Container Station on QNAP NAS
+  - Portainer
+  - etc.
+
+While this is useful for users to adjust environment variable values to suit
+their needs, keeping all of them can be confusing and even risky.
+
+A good practice is to set or retain only the variables necessary for the
+container to function as desired in your setup. If a variable is left at its
+default value, it can be removed. Keep in mind that all environment variables
+are optional; none are required for the container to start.
+
+Removing unneeded environment variables offers several benefits:
+
+  - Prevents retaining variables no longer used by the container. Over time,
+    with image updates, some variables may become obsolete.
+  - Allows the Docker image to update or fix default values. With image updates,
+    default values may change to address issues or support new features.
+  - Avoids changes to variables that could disrupt the container's
+    functionality. Some undocumented variables, like `PATH` or `ENV`, are
+    required but not meant to be modified by users, yet container management
+    tools may expose them.
+  - Addresses a bug in Container Station on QNAP and the Docker application on
+    Synology, where variables without values may not be allowed. This behavior
+    is incorrect, as variables without values are valid. Removing unneeded
+    variables prevents deployment issues on these devices.
 
 ### Data Volumes
 
-The following table describes data volumes used by the container.  The mappings
-are set via the `-v` parameter.  Each mapping is specified with the following
-format: `<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
+The following table describes the data volumes used by the container. Volume
+mappings are set using the `-v` parameter with a value in the format
+`<HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]`.
 
 | Container path  | Permissions | Description |
 |-----------------|-------------|-------------|
-|`/config`| rw | This is where the application stores its configuration, log and any files needing persistency. |
-|`/storage`| rw | This location contains files from your host that need to be accessible by the application. |
+|`/config`| rw | Stores the application's configuration, state, logs, and any files requiring persistency. |
+|`/storage`| rw | Contains files from the host that need to be accessible to the application. |
 |`/watch`| rw | This is the input folder of the Automated Media Center (AMC) script.  Any media copied to this folder will be processed by the script.  Note that there is no need to map this folder if the script is not used. |
 |`/output`| rw | This is the output folder of the Automated Media Center (AMC) script.  This is where medias are located once they are renamed and organized.  Note that there is no need to map this folder if the script is not used. |
 
 ### Ports
 
-Here is the list of ports used by the container.  They can be mapped to the host
-via the `-p` parameter (one per port mapping).  Each mapping is defined in the
-following format: `<HOST_PORT>:<CONTAINER_PORT>`.  The port number inside the
-container cannot be changed, but you are free to use any port on the host side.
+The following table lists the ports used by the container.
 
-| Port | Mapping to host | Description |
-|------|-----------------|-------------|
-| 5800 | Mandatory | Port used to access the application's GUI via the web interface. |
-| 5900 | Optional | Port used to access the application's GUI via the VNC protocol.  Optional if no VNC client is used. |
+When using the default bridge network, ports can be mapped to the host using the
+`-p` parameter with value in the format `<HOST_PORT>:<CONTAINER_PORT>`. The
+internal container port may not be changeable, but you can use any port on the
+host side.
+
+See the Docker [Docker Container Networking](https://docs.docker.com/config/containers/container-networking)
+documentation for details.
+
+| Port | Protocol | Mapping to Host | Description |
+|------|----------|-----------------|-------------|
+| 5800 | TCP | Optional | Port to access the application's GUI via the web interface. Mapping to the host is optional if web access is not needed. For non-default bridge networks, the port can be changed with the `WEB_LISTENING_PORT` environment variable. |
+| 5900 | TCP | Optional | Port to access the application's GUI via the VNC protocol. Mapping to the host is optional if VNC access is not needed. For non-default bridge networks, the port can be changed with the `VNC_LISTENING_PORT` environment variable. |
 
 ### Changing Parameters of a Running Container
 
-As seen, environment variables, volume mappings and port mappings are specified
-while creating the container.
-
-The following steps describe the method used to add, remove or update
-parameter(s) of an existing container.  The generic idea is to destroy and
-re-create the container:
+Environment variables, volume mappings, and port mappings are specified when
+creating the container. To modify these parameters for an existing container,
+follow these steps:
 
   1. Stop the container (if it is running):
-```
+```shell
 docker stop filebot
 ```
+
   2. Remove the container:
-```
+```shell
 docker rm filebot
 ```
-  3. Create/start the container using the `docker run` command, by adjusting
+
+  3. Recreate and start the container using the `docker run` command, adjusting
      parameters as needed.
 
-**NOTE**: Since all application's data is saved under the `/config` container
-folder, destroying and re-creating a container is not a problem: nothing is lost
-and the application comes back with the same state (as long as the mapping of
-the `/config` folder remains the same).
+> [!NOTE]
+> Since all application data is saved under the `/config` container folder,
+> destroying and recreating the container does not result in data loss, and the
+> application resumes with the same state, provided the `/config` folder
+> mapping remains unchanged.
 
-## Docker Compose File
+### Docker Compose File
 
-Here is an example of a `docker-compose.yml` file that can be used with
+Below is an example `docker-compose.yml` file for use with
 [Docker Compose](https://docs.docker.com/compose/overview/).
 
-Make sure to adjust according to your needs.  Note that only mandatory network
-ports are part of the example.
+Adjust the configuration to suit your needs. Only mandatory settings are
+included in this example.
 
 ```yaml
-version: '3'
 services:
   filebot:
     image: jlesage/filebot
-    build: .
     ports:
       - "5800:5800"
     volumes:
       - "/docker/appdata/filebot:/config:rw"
-      - "$HOME:/storage:rw"
+      - "/home/user:/storage:rw"
 ```
+
+## Docker Image Versioning and Tags
+
+Each release of a Docker image is versioned, and each version as its own image
+tag. Before October 2022, the versioning scheme followed
+[semantic versioning](https://semver.org).
+
+Since then, the versioning scheme has shifted to
+[calendar versioning](https://calver.org) with the format `YY.MM.SEQUENCE`,
+where:
+  - `YY` is the zero-padded year (relative to year 2000).
+  - `MM` is the zero-padded month.
+  - `SEQUENCE` is the incremental release number within the month (first release
+    is 1, second is 2, etc).
+
+View all available tags on [Docker Hub] or check the [Releases] page for version
+details.
+
+[Releases]: https://github.com/jlesage/docker-filebot/releases
+[Docker Hub]: https://hub.docker.com/r/jlesage/filebot/tags
 
 ## Docker Image Update
 
-If the system on which the container runs doesn't provide a way to easily update
-the Docker image, the following steps can be followed:
+The Docker image is regularly updated to incorporate new features, fix issues,
+or integrate newer versions of the containerized application. Several methods
+can be used to update the Docker image.
+
+If your system provides a built-in method for updating containers, this should
+be your primary approach.
+
+Alternatively, you can use [Watchtower], a container-based solution for
+automating Docker image updates. Watchtower seamlessly handles updates when a
+new image is available.
+
+To manually update the Docker image, follow these steps:
 
   1. Fetch the latest image:
-```
+```shell
 docker pull jlesage/filebot
 ```
+
   2. Stop the container:
-```
+```shell
 docker stop filebot
 ```
+
   3. Remove the container:
-```
+```shell
 docker rm filebot
 ```
-  4. Start the container using the `docker run` command.
+
+  4. Recreate and start the container using the `docker run` command, with the
+     same parameters used during initial deployment.
+
+[Watchtower]: https://github.com/containrrr/watchtower
 
 ### Synology
 
-For owners of a Synology NAS, the following steps can be use to update a
-container image.
+For Synology NAS users, follow these steps to update a container image:
 
   1.  Open the *Docker* application.
-  2.  Click on *Registry* in the left pane.
+  2.  Click *Registry* in the left pane.
   3.  In the search bar, type the name of the container (`jlesage/filebot`).
-  4.  Select the image, click *Download* and then choose the `latest` tag.
-  5.  Wait for the download to complete.  A  notification will appear once done.
-  6.  Click on *Container* in the left pane.
+  4.  Select the image, click *Download*, and choose the `latest` tag.
+  5.  Wait for the download to complete. A notification will appear once done.
+  6.  Click *Container* in the left pane.
   7.  Select your FileBot container.
-  8.  Stop it by clicking *Action*->*Stop*.
-  9.  Clear the container by clicking *Action*->*Clear*.  This removes the
-      container while keeping its configuration.
-  10. Start the container again by clicking *Action*->*Start*. **NOTE**:  The
-      container may temporarily disappear from the list while it is re-created.
+  8.  Stop it by clicking *Action* -> *Stop*.
+  9.  Clear the container by clicking *Action* -> *Reset* (or *Action* ->
+      *Clear* if you don't have the latest *Docker* application). This removes
+      the container while keeping its configuration.
+  10. Start the container again by clicking *Action* -> *Start*. **NOTE**:  The
+      container may temporarily disappear from the list while it is recreated.
 
 ### unRAID
 
-For unRAID, a container image can be updated by following these steps:
+For unRAID users, update a container image with these steps:
 
   1. Select the *Docker* tab.
   2. Click the *Check for Updates* button at the bottom of the page.
-  3. Click the *update ready* link of the container to be updated.
+  3. Click the *apply update* link of the container to be updated.
 
 ## User/Group IDs
 
-When using data volumes (`-v` flags), permissions issues can occur between the
-host and the container.  For example, the user within the container may not
-exists on the host.  This could prevent the host from properly accessing files
-and folders on the shared volume.
+When mapping data volumes (using the `-v` flag of the `docker run` command),
+permission issues may arise between the host and the container. Files and
+folders in a data volume are owned by a user, which may differ from the user
+running the application. Depending on permissions, this could prevent the
+container from accessing the shared volume.
 
-To avoid any problem, you can specify the user the application should run as.
-
-This is done by passing the user ID and group ID to the container via the
+To avoid this, specify the user the application should run as using the
 `USER_ID` and `GROUP_ID` environment variables.
 
-To find the right IDs to use, issue the following command on the host, with the
-user owning the data volume on the host:
+To find the appropriate IDs, run the following command on the host for the user
+owning the data volume:
 
-    id <username>
+```shell
+id <username>
+```
 
-Which gives an output like this one:
+This produces output like:
+
 ```
 uid=1000(myuser) gid=1000(myuser) groups=1000(myuser),4(adm),24(cdrom),27(sudo),46(plugdev),113(lpadmin)
 ```
 
-The value of `uid` (user ID) and `gid` (group ID) are the ones that you should
-be given the container.
+Use the `uid` (user ID) and `gid` (group ID) values to configure the container.
+
+## Shell Access
+
+To access the shell of a running container, execute the following command:
+
+```shell
+docker exec -ti CONTAINER sh
+```
+
+Where `CONTAINER` is the ID or the name of the container used during its
+creation.
 
 ## Accessing the GUI
 
-Assuming that container's ports are mapped to the same host's ports, the
-graphical interface of the application can be accessed via:
+Assuming the container's ports are mapped to the same host's ports, access the
+application's GUI as follows:
 
-  * A web browser:
-```
-http://<HOST IP ADDR>:5800
+  - Via a web browser:
+
+```text
+http://<HOST_IP_ADDR>:5800
 ```
 
-  * Any VNC client:
-```
-<HOST IP ADDR>:5900
+  - Via any VNC client:
+
+```text
+<HOST_IP_ADDR>:5900
 ```
 
 ## Security
 
-By default, access to the application's GUI is done over an unencrypted
-connection (HTTP or VNC).
+By default, access to the application's GUI uses an unencrypted connection (HTTP
+or VNC).
 
-Secure connection can be enabled via the `SECURE_CONNECTION` environment
-variable.  See the [Environment Variables](#environment-variables) section for
-more details on how to set an environment variable.
+A secure connection can be enabled via the `SECURE_CONNECTION` environment
+variable. See the [Environment Variables](#environment-variables) section for
+details on configuring environment variables.
 
-When enabled, application's GUI is performed over an HTTPs connection when
-accessed with a browser.  All HTTP accesses are automatically redirected to
-HTTPs.
+When enabled, the GUI is accessed over HTTPS when using a browser, with all HTTP
+accesses redirected to HTTPS.
 
-When using a VNC client, the VNC connection is performed over SSL.  Note that
-few VNC clients support this method.  [SSVNC] is one of them.
+For VNC clients, the connection can be secured using on of two methods,
+configured via the `SECURE_CONNECTION_VNC_METHOD` environment variable:
 
-[SSVNC]: http://www.karlrunge.com/x11vnc/ssvnc.html
+  - `SSL`: An SSL tunnel is used to transport the VNC connection. Few VNC
+    clients supports this method; [SSVNC] is one that does.
+  - `TLS`: A VNC security type negotiated during the VNC handshake. It uses TLS
+    to establish a secure connection. Clients may optionally validate the
+    server’s certificate. Valid certificates must be provided for this
+    validation to succeed. See [Certificates](#certificates) for details.
+    [TigerVNC] is a client that supports TLS encryption.
+
+[TigerVNC]: https://tigervnc.org
 
 ### SSVNC
 
-[SSVNC] is a VNC viewer that adds encryption security to VNC connections.
+[SSVNC] is a VNC viewer that adds encryption to VNC connections by using an
+SSL tunnel to transport the VNC traffic.
 
-While the Linux version of [SSVNC] works well, the Windows version has some
-issues.  At the time of writing, the latest version `1.0.30` is not functional,
-as a connection fails with the following error:
-```
+While the Linux version of [SSVNC] works well, the Windows version has issues.
+At the time of writing, the latest version `1.0.30` fails with the error:
+
+```text
 ReadExact: Socket error while reading
 ```
-However, for your convienence, an unoffical and working version is provided
-here:
+
+For convenience, an unofficial, working version is provided here:
 
 https://github.com/jlesage/docker-baseimage-gui/raw/master/tools/ssvnc_windows_only-1.0.30-r1.zip
 
-The only difference with the offical package is that the bundled version of
-`stunnel` has been upgraded to version `5.49`, which fixes the connection
-problems.
+This version upgrades the bundled `stunnel` to version `5.49`, resolving the
+connection issues.
+
+[SSVNC]: http://www.karlrunge.com/x11vnc/ssvnc.html
 
 ### Certificates
 
-Here are the certificate files needed by the container.  By default, when they
-are missing, self-signed certificates are generated and used.  All files have
-PEM encoded, x509 certificates.
+The following certificate files are required by the container. If missing,
+self-signed certificates are generated and used. All files are PEM-encoded x509
+certificates.
 
 | Container Path                  | Purpose                    | Content |
 |---------------------------------|----------------------------|---------|
 |`/config/certs/vnc-server.pem`   |VNC connection encryption.  |VNC server's private key and certificate, bundled with any root and intermediate certificates.|
-|`/config/certs/web-privkey.pem`  |HTTPs connection encryption.|Web server's private key.|
-|`/config/certs/web-fullchain.pem`|HTTPs connection encryption.|Web server's certificate, bundled with any root and intermediate certificates.|
+|`/config/certs/web-privkey.pem`  |HTTPS connection encryption.|Web server's private key.|
+|`/config/certs/web-fullchain.pem`|HTTPS connection encryption.|Web server's certificate, bundled with any root and intermediate certificates.|
 
-**NOTE**: To prevent any certificate validity warnings/errors from the browser
-or VNC client, make sure to supply your own valid certificates.
+> [!TIP]
+> To avoid certificate validity warnings or errors in browsers or VNC clients,
+> provide your own valid certificates.
 
-**NOTE**: Certificate files are monitored and relevant daemons are automatically
-restarted when changes are detected.
+> [!NOTE]
+> Certificate files are monitored, and relevant services are restarted when
+> changes are detected.
+
+> [!NOTE]
+> When the container generates its own self-signed certificate, the Common Name
+> (CN) and Subject Alternative Name (SAN) are set to the container's hostname.
+> To specify the hostname, use the `--hostname` parameter when creating the
+> container with `docker run`.
 
 ### VNC Password
 
-To restrict access to your application, a password can be specified.  This can
-be done via two methods:
-  * By using the `VNC_PASSWORD` environment variable.
-  * By creating a `.vncpass_clear` file at the root of the `/config` volume.
-    This file should contains the password in clear-text.  During the container
-    startup, content of the file is obfuscated and moved to `.vncpass`.
+To restrict access to your application, set a password using one of two methods:
+  - Via the `VNC_PASSWORD` environment variable.
+  - Via a `.vncpass_clear` file at the root of the `/config` volume, containing
+    the password in clear text. During container startup, the content is
+    obfuscated and moved to `.vncpass`.
 
-The level of security provided by the VNC password depends on two things:
-  * The type of communication channel (encrypted/unencrypted).
-  * How secure access to the host is.
+The security of the VNC password depends on:
+  - The communication channel (encrypted or unencrypted).
+  - The security of host access.
 
-When using a VNC password, it is highly desirable to enable the secure
-connection to prevent sending the password in clear over an unencrypted channel.
+When using a VNC password, configure the container with secure web access
+(HTTPS) to prevent sending the password in clear text over an unencrypted
+channel.
 
-**ATTENTION**: Password is limited to 8 characters.  This limitation comes from
-the Remote Framebuffer Protocol [RFC](https://tools.ietf.org/html/rfc6143) (see
-section [7.2.2](https://tools.ietf.org/html/rfc6143#section-7.2.2)).  Any
-characters beyhond the limit are ignored.
+Unauthorized users with sufficient host privileges can retrieve the password by:
+
+  - Viewing the `VNC_PASSWORD` environment variable via `docker inspect`. By
+    default, the `docker` command requires root access, but it can be configured
+    to allow users in a specific group.
+  - Decrypting the `/config/.vncpass` file, which requires root or `USER_ID`
+    permissions.
+
+> [!CAUTION]
+> VNC password is limited to 8 characters. This limitation comes from the Remote
+> Framebuffer Protocol [RFC](https://tools.ietf.org/html/rfc6143) (see section
+> [7.2.2](https://tools.ietf.org/html/rfc6143#section-7.2.2)).
+
+### Web Authentication
+
+Access to the application's GUI via a web browser can be protected with a login
+page. When enabled, users must provide valid credentials to gain access.
+
+Enable web authentication by setting the `WEB_AUTHENTICATION` environment
+variable to `1`. See the [Environment Variables](#environment-variables) section
+for details on configuring environment variables.
+
+> [!IMPORTANT]
+> Web authentication requires the container to be configured with secure web
+> access (HTTPS). See [Security](#security) for details.
+
+> [!CAUTION]
+> If a reverse proxy is used and it cannot use HTTPS to the container backend,
+> set `WEB_AUTHENTICATION_ALLOW_INSECURE=1` so web authentication can run with
+> `SECURE_CONNECTION=0`. This is a last resort: credentials and session tokens
+> may travel in cleartext between the proxy and the container. Do not publish
+> the container web port on an untrusted network, and ensure browsers reach the
+> application only over HTTPS through the reverse proxy.
+
+> [!NOTE]
+> This feature is not available to VNC clients.
+
+After a successful login, a token is issued and stored in the browser. The token
+remains valid for the duration set by `WEB_AUTHENTICATION_TOKEN_VALIDITY_TIME`
+(default: 24 hours). During that time, the user can access the GUI without
+logging in again.
+
+> [!NOTE]
+> Login sessions are intentionally not persisted across container restarts. When
+> the container (or the web authentication service) restarts, all existing
+> tokens become invalid and users must log in again. This is by design: session
+> state is kept in memory and cookie signing keys are regenerated on each start.
+
+#### Configuring Users Credentials
+
+User credentials can be configured in two ways:
+
+  1. Via container environment variables.
+  2. Via a password database.
+
+Container environment variables provide a quick way to configure a single user.
+Set the username and password using:
+  - `WEB_AUTHENTICATION_USERNAME`
+  - `WEB_AUTHENTICATION_PASSWORD`
+
+See the [Environment Variables](#environment-variables) section for details on
+configuring environment variables.
+
+For a more secure method or to configure multiple users, use a password database
+at `/config/webauth-htpasswd` within the container. This file uses the Apache
+HTTP server's htpasswd format, storing bcrypt-hashed passwords.
+
+Manage users with the `webauth-user` tool:
+  - Add a user: `docker exec -ti <container name> webauth-user add <username>`
+  - Update a user: `docker exec -ti <container name> webauth-user update <username>`
+  - Remove a user: `docker exec <container name> webauth-user del <username>`
+  - List users: `docker exec <container name> webauth-user list`
 
 ## Reverse Proxy
 
-The following sections contains NGINX configuration that need to be added in
-order to reverse proxy to this container.
+The following sections provide NGINX configurations for setting up a reverse
+proxy to this container.
 
-A reverse proxy server can route HTTP requests based on the hostname or the URL
+A reverse proxy server can route HTTP requests based on the hostname or URL
 path.
 
 ### Routing Based on Hostname
 
-In this scenario, each hostname is routed to a different application/container.
+In this scenario, each hostname is routed to a different application or
+container.
 
-For example, let's say the reverse proxy server is running on the same machine
-as this container.  The server would proxy all HTTP requests sent to
-`filebot.domain.tld` to the container at `127.0.0.1:5800`.
+For example, if the reverse proxy server runs on the same machine as this
+container, it would proxy all HTTP requests for `filebot.domain.tld` to
+the container at `127.0.0.1:5800`.
 
-Here are the relevant configuration elements that would be added to the NGINX
-configuration:
+Here are the relevant configuration elements to add to the NGINX configuration:
 
-```
+```nginx
 map $http_upgrade $connection_upgrade {
 	default upgrade;
 	''      close;
@@ -396,33 +623,27 @@ server {
 	server_name filebot.domain.tld;
 
 	location / {
-	        proxy_pass http://docker-filebot;
-	}
-
-	location /websockify {
 		proxy_pass http://docker-filebot;
 		proxy_http_version 1.1;
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection $connection_upgrade;
-		proxy_read_timeout 86400;
+		proxy_buffering off;
+		proxy_read_timeout 86400s;
+		proxy_send_timeout 86400s;
 	}
 }
-
 ```
 
 ### Routing Based on URL Path
 
-In this scenario, the hostname is the same, but different URL paths are used to
-route to different applications/containers.
-
-For example, let's say the reverse proxy server is running on the same machine
-as this container.  The server would proxy all HTTP requests for
+In this scenario, the same hostname is used, but different URL paths route to
+different applications or containers. For example, if the reverse proxy server
+runs on the same machine as this container, it would proxy all HTTP requests for
 `server.domain.tld/filebot` to the container at `127.0.0.1:5800`.
 
-Here are the relevant configuration elements that would be added to the NGINX
-configuration:
+Here are the relevant configuration elements to add to the NGINX configuration:
 
-```
+```nginx
 map $http_upgrade $connection_upgrade {
 	default upgrade;
 	''      close;
@@ -442,27 +663,191 @@ server {
 	location = /filebot {return 301 $scheme://$http_host/filebot/;}
 	location /filebot/ {
 		proxy_pass http://docker-filebot/;
-		location /filebot/websockify {
-			proxy_pass http://docker-filebot/websockify/;
-			proxy_http_version 1.1;
-			proxy_set_header Upgrade $http_upgrade;
-			proxy_set_header Connection $connection_upgrade;
-			proxy_read_timeout 86400;
-		}
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection $connection_upgrade;
+		proxy_buffering off;
+		proxy_read_timeout 86400s;
+		proxy_send_timeout 86400s;
+		# Uncomment the following line if your Nginx server runs on a port that
+		# differs from the one seen by external clients.
+		#port_in_redirect off;
 	}
 }
-
-```
-## Shell Access
-
-To get shell access to a the running container, execute the following command:
-
-```
-docker exec -ti CONTAINER sh
 ```
 
-Where `CONTAINER` is the ID or the name of the container used during its
-creation (e.g. `crashplan-pro`).
+## Web Control Panel
+
+The control panel is available whenever the application GUI is accessed through
+a web browser. Click the small three-dots tab on the left edge of the browser
+window to open it.
+
+![Web Control Panel](https://images.weserv.nl/?url=raw.githubusercontent.com/jlesage/docker-templates/master/jlesage/images/control-panel.png&w=500&v=1)
+
+| Control | Action / Purpose |
+|---------|------------------|
+| **X** icon | Closes the control panel. |
+| **Logout** icon | Logs out from the web interface. Visible only when [web authentication](#web-authentication) is enabled. |
+| **Keyboard** icon | Toggle the on-screen keyboard. Visible only on touch devices. |
+| **Fullscreen** icon | Toggle fullscreen mode for the browser window. |
+| **Hand** icon| Allows dragging/moving the application window. Visible only when **Scaling Mode** is *None* and **Clip to Window** is enabled.
+| **Folder** icon | Opens the integrated file browser. Visible only when the [file manager](#web-file-manager) is enabled. |
+| **Terminal** icon | Opens the integrated terminal. Visibile only when the [terminal](#web-terminal) is enabled. |
+| **Clipboard** text box| Mirrors the application’s clipboard. Any text typed or pasted here is sent to the application, and text copied inside the application automatically appears here. Hidden when [host clipboard sync](#host-clipboard-sync) is active. |
+| **Clear** button | Clears the clipboard. Hidden when [host clipboard sync](#host-clipboard-sync) is active. |
+| **Audio** icon | Mutes or unmutes audio streaming from the container. Visible only when [audio support](#web-audio) is enabled. |
+| **Volume** slider| Controls the playback volume of the audio streaming from the container. Visible only when [audio support](#web-audio) is enabled. |
+| **Clip to Window** toggle | Only applies when **Scaling Mode** is *None*. When disabled, scrollbars appear if the application window is larger than the browser window. When enabled, no scrollbars are shown and the hand icon is used to pan. |
+| **Sync with Host Clipboard** toggle | Enables synchronization between the host system clipboard and the application. Actual availability still depends on the browser. Visible only when [host clipboard sync](#host-clipboard-sync) support is enabled. |
+| **Scaling Mode** dropdown | Controls how the application window is scaled to fit the browser. **None** – no scaling, the application window keeps its original size. **Local Scaling** – the image is scaled in the browser (application window size unchanged). **Remote Scaling** – the application window inside the container is automatically resized to match the browser window size. |
+| **Quality** slider | Adjusts image quality. Moving the slider left reduces bandwidth at the cost of visual quality. |
+| **Compression** slider | Adjusts compression level applied to screen updates. Moving the slider right increases compression, which lowers bandwidth but raises CPU usage. |
+| **Logging** dropdown | Sets the verbosity level of the web interface logs shown in the browser console. |
+| **Application version** label | Displays the version of FileBot integrated into Docker image. |
+| **Docker image** version label | Displays the version of the Docker image currently running. |
+
+## Host Clipboard Sync
+
+Host clipboard sync keeps the system clipboard on the machine running the
+browser in sync with the application inside the container. When active, copy
+and paste work directly between the host and the app without using the control
+panel clipboard.
+
+This is different from the control panel clipboard, which only mirrors the
+application's clipboard so text can be transferred manually.
+
+Host clipboard sync is not available when using VNC clients and is supported
+only in browsers based on the Chromium engine, such as Google Chrome and
+Microsoft Edge.
+
+It operates transparently once permission has been granted by the browser.
+Depending on browser implementation, a prompt may appear the first time
+clipboard access is requested.
+
+Support is enabled by default via the `WEB_HOST_CLIPBOARD_SYNC` environment
+variable. Setting it to `1` only enables support on the container side; the
+feature still depends on the browser (engine, secure context, and clipboard
+permissions). Setting it to `0` disables the feature for all sessions. When
+support is enabled, users can also turn host clipboard sync on or off from the
+web interface settings for their own browser.
+
+> [!IMPORTANT]
+> Web browsers only allow access to the clipboard in secure contexts (HTTPS).
+> This means the container must be configured with secure web access. See
+> [Security](#security) for details.
+
+> [!TIP]
+> If host clipboard sync is not available or has been disabled, text can still
+> be copied and pasted using the clipboard of the
+> [control panel](#web-control-panel), which provides manual access to the
+> application's clipboard.
+
+> [!NOTE]
+> This feature is not available to VNC clients.
+
+## Web Audio
+
+The container supports streaming audio from the application, played through the
+user's web browser. Audio is not supported for VNC clients.
+
+Audio is streamed with the following specification:
+
+  * Raw PCM format
+  * 2 channels
+  * 16-bit sample depth
+  * 44.1kHz sample rate
+
+Enable web audio by setting `WEB_AUDIO` to `1`. See the
+[Environment Variables](#environment-variables) section for details on
+configuring environment variables.
+
+Control of the audio stream (mute, unmute and volume) is done via the
+[control panel](#web-control-panel).
+
+> [!NOTE]
+> This feature is not available to VNC clients.
+
+## Web File Manager
+
+The container includes a simple file manager for interacting with container
+files through a web browser, supporting operations like renaming, deleting,
+uploading, and downloading.
+
+Enable the file manager by setting `WEB_FILE_MANAGER` to `1`. See the
+[Environment Variables](#environment-variables) section for details on
+configuring environment variables.
+
+Open the file manager by clicking the folder icon of the
+[control panel](#web-control-panel)
+
+By default, the container's entire filesystem is not accessible. The
+`WEB_FILE_MANAGER_ALLOWED_PATHS` environment variable is a comma-separated list
+that specifies which paths within the container are allowed to be accessed. When
+set to `AUTO` (the default), it automatically includes commonly used folders and
+any folders mapped to the container.
+
+The `WEB_FILE_MANAGER_DENIED_PATHS` environment variable defines which paths are
+explicitly denied access by the file manager. A denied path takes precedence
+over an allowed one.
+
+> [!NOTE]
+> This feature is not available to VNC clients.
+
+## Web Notifications
+
+The container includes support for notifications sent through the web browser.
+Any desktop notification generated by FileBot is forwarded to the
+browser, which then displays it as a native notification on the user's system.
+
+Enable the web notification service by setting `WEB_NOTIFICATION` to `1`. See
+the [Environment Variables](#environment-variables) section for details on
+configuring environment variables.
+
+> [!IMPORTANT]
+> Web browsers only allow notifications in secure contexts (HTTPS). This means
+> the container must be configured with secure web access. See
+> [Security](#security) for details.
+
+> [!NOTE]
+> This feature is not available to VNC clients.
+
+## Web Terminal
+
+The container includes a web-based terminal, allowing users to easily obtain
+shell access to the running container through a web browser.
+
+Enable the web terminal by setting `WEB_TERMINAL` to `1`. See the
+[Environment Variables](#environment-variables) section for details on
+configuring environment variables.
+
+> [!IMPORTANT]
+> For security reasons, the shell runs as a non-privileged user. As a result,
+> commands that require root privileges cannot be executed.
+
+> [!IMPORTANT]
+> To prevent sensible information from leaking over the network, it is strongly
+> recommended to configure the container with secure web access. See
+> [Security](#security) for details.
+
+> [!NOTE]
+> This feature is not available to VNC clients.
+
+## GPU Acceleration Support
+
+This container supports hardware-accelerated rendering of the application's
+graphical user interface. When enabled, the X server running inside the
+container can use the host GPU, providing improved rendering performance and
+full hardware acceleration for OpenGL via the GLX extension.
+
+This feature requires open-source kernel drivers on the host system, such as
+`amdgpu` for AMD GPUs, `i915` for Intel GPUs, or `nouveau` for NVIDIA GPUs, to
+support the Direct Rendering Infrastructure (DRI3) and Generic Buffer Management
+(GBM). Proprietary drivers, such as NVIDIA's, are not supported.
+
+To enable GPU acceleration, the host must have compatible open-source kernel
+drivers installed, and the GPU device `/dev/dri` must be exposed to the
+container. For example, this is done by adding the `--device /dev/dri`
+argument to the `docker run` command.
 
 ## License
 
@@ -492,7 +877,7 @@ the author was expecting users to donate an arbitrary amount of money if they
 like and use the software.
 
 The last version of FileBot supporting this model is
-`4.7.9`.  This version is implemented in container image version `1.0.2`.
+`4.7.9`. This version is implemented in container image version `1.0.2`.
 
 To revert to this version, create the container by using
 `jlesage/filebot:v1.0.2` as the image name.
@@ -504,7 +889,7 @@ supported and maintained by the author of FileBot.
 
 This container supports the FileBot's
 [Automated Media Center](https://www.filebot.net/forums/viewtopic.php?t=215)
-(AMC) script.  This script automatically and smartly organizes movies, TV shows,
+(AMC) script. This script automatically and smartly organizes movies, TV shows,
 anime and music.
 
 Basically, files copied to the `/watch` container folder are automatically
@@ -517,21 +902,35 @@ descriptions of environment variables that can be set.
 To see what the AMC script is doing, look at the container's log.
 
 **NOTE**: By default, the script runs in dry mode, meaning that no change is
-performed.  This allows you to verify that results produced by the script are
-correct.  Then, the `AMC_ACTION` environment variable can be updated to perform
+performed. This allows you to verify that results produced by the script are
+correct. Then, the `AMC_ACTION` environment variable can be updated to perform
 changes to the file system.
 
 **NOTE**: For the script to properly function, container folders `/watch` and
-`/output` must be properly mapped to the host.  See the
+`/output` must be properly mapped to the host. See the
 [Data Volumes](#data-volumes) section.
 
-[TimeZone]: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+## Using a Beta Version
+
+This container provides the stable version of FileBot.
+However, it's possible to use a beta version when needed. This is done by
+setting the environment variable `USE_FILEBOT_BETA` to `1`.
+
+When set, the custom FileBot installation located under
+`/config/beta` (container path) is used instead of the stable version.
+
+FileBot beta version can be installed manually, by
+downloading the portable version from https://get.filebot.net/filebot/BETA and
+extracting the package to `/config/beta`. Else, the latest beta version is
+downloaded automatically during the startup of the container if no installation
+is found under `/config/beta`.
+
+**NOTE**: Beta version may have bugs and stability issues. Use at your own
+risk.
 
 ## Support or Contact
 
-Having troubles with the container or have questions?  Please
-[create a new issue].
+Having troubles with the container or have questions? Please
+[create a new issue](https://github.com/jlesage/docker-filebot/issues).
 
-For other great Dockerized applications, see https://jlesage.github.io/docker-apps.
-
-[create a new issue]: https://github.com/jlesage/docker-filebot/issues
+For other Dockerized applications, visit https://jlesage.github.io/docker-apps.
